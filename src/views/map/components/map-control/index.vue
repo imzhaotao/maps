@@ -1,6 +1,7 @@
 <script lang="tsx">
 import {defineComponent, ref, Ref} from 'vue';
 import {MapInfo} from '@/types';
+import {read} from 'shapefile';
 
 const CN_LAT_LNG_RANGE = {
   lat: {
@@ -15,8 +16,8 @@ const CN_LAT_LNG_RANGE = {
 
 export default defineComponent({
   name: 'map-control',
-  emits: ['mapPosInfo', 'setMapPos'],
-  setup() {
+  emits: ['mapPosInfo', 'setMapPos', 'setMapGeoJSON'],
+  setup(props, content) {
     let mapList: Ref = ref<[] | MapInfo>([]);
     const genPos = (min: number, max: number): number => {
       return Number((Math.random() * (max - min) + min).toFixed(4));
@@ -35,10 +36,24 @@ export default defineComponent({
     const clearMapList = () => {
       mapList.value = [];
     };
+    // shapeFile to geoJSON
+    const shapeFileToGeoJson = (file: Blob) => {
+      const reader = new FileReader();
+      reader.onload = async function(e: any) {
+        // const target = e.target as HTMLInputElement | Event;
+        const arrayBuffer = e.target.result;
+        read(arrayBuffer).then(res => {
+          content.emit('setMapGeoJSON', res);
+        });
+      };
+      reader.readAsArrayBuffer(file);
+    };
+
     return {
       genMapList,
       mapList,
-      clearMapList
+      clearMapList,
+      shapeFileToGeoJson,
     };
   },
   render() {
@@ -50,6 +65,9 @@ export default defineComponent({
               this.$emit('mapPosInfo', this.mapList);
             }}>generate
             </button>
+            <input type="file" onChange={(file: any) => {
+              this.shapeFileToGeoJson(file.target.files[0]);
+            }}/>
           </div>
           <div class="pos-list">
             {this.mapList?.map((i: MapInfo) => {
@@ -78,6 +96,10 @@ export default defineComponent({
 
   .button-wrap {
     margin-bottom: 10px;
+
+    button {
+      margin-right: 20px;
+    }
   }
 
   .pos-list {

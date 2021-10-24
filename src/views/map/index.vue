@@ -10,25 +10,29 @@ export default defineComponent({
     const list: Ref = ref<[] | MapInfo>([]);
     const mapPos: Ref = ref<{} | MapInfo>({});
     const mapControl = ref<InstanceType<typeof MapControl> & any>();
+    const mapGeoJSON = ref({});
     return {
       list,
       mapPos,
-      mapControl
+      mapControl,
+      mapGeoJSON
     };
   },
   render() {
     return (
         <div id="map-container">
           <div class="map">
-            <GoogleMap mapList={this.list} mapPos={this.mapPos} onClearPos={() => {
+            <GoogleMap mapList={this.list} mapGeoJSON={this.mapGeoJSON} mapPos={this.mapPos} onClearPos={() => {
               this.mapControl.clearMapList();
             }}></GoogleMap>
           </div>
           <div class="control">
-            <MapControl ref='mapControl' onMapPosInfo={(list) => {
+            <MapControl ref="mapControl" onMapPosInfo={(list) => {
               this.list = list;
             }} onSetMapPos={(pos) => {
               this.mapPos = pos;
+            }} onSetMapGeoJSON={(json) => {
+              this.mapGeoJSON = json;
             }}></MapControl>
           </div>
         </div>

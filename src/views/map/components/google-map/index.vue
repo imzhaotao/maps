@@ -19,11 +19,16 @@ export default defineComponent({
       type: Object,
       default: () => {
       }
+    },
+    mapGeoJSON: {
+      type: Object,
+      default: () => {
+      }
     }
   },
   emits: ['clearPos'],
   setup(props, context) {
-    const {mapList, mapPos} = toRefs(props);
+    const {mapList, mapPos, mapGeoJSON} = toRefs(props);
     let map: null | any, googleMap = null;
     navigator.geolocation.getCurrentPosition((pos) => {
       console.log(pos);
@@ -56,6 +61,9 @@ export default defineComponent({
               lat: n.lat,
               lng: n.lng
             });
+          });
+          watch(mapGeoJSON, (n) => {
+            map.data.addGeoJson(n);
           });
           const clearMarkers = () => {
             for (let i = 0; i < markersArray.length; i++) {
