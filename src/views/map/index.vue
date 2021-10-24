@@ -22,18 +22,24 @@ export default defineComponent({
     return (
         <div id="map-container">
           <div class="map">
-            <GoogleMap mapList={this.list} mapGeoJSON={this.mapGeoJSON} mapPos={this.mapPos} onClearPos={() => {
-              this.mapControl.clearMapList();
-            }}></GoogleMap>
+            <GoogleMap mapList={this.list}
+                       mapGeoJSON={this.mapGeoJSON}
+                       mapPos={this.mapPos}
+                       onClearPos={() => {
+                         this.mapControl.clearMapList();
+                       }}></GoogleMap>
           </div>
           <div class="control">
-            <MapControl ref="mapControl" onMapPosInfo={(list) => {
-              this.list = list;
-            }} onSetMapPos={(pos) => {
-              this.mapPos = pos;
-            }} onSetMapGeoJSON={(json) => {
-              this.mapGeoJSON = json;
-            }}></MapControl>
+            <MapControl ref="mapControl"
+                        onMapPosInfo={(list) => {
+                          this.list = list;
+                        }}
+                        onSetMapPos={(pos) => {
+                          this.mapPos = pos;
+                        }}
+                        onSetMapGeoJSON={(json) => {
+                          this.mapGeoJSON = json;
+                        }}></MapControl>
           </div>
         </div>
     );
